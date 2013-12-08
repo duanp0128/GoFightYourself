@@ -35,20 +35,15 @@ public class StartView extends BaseView {
 		super(context);
 		isPressStart = isPressEnd = isPressAbout = false;
 		thread = new Thread(this);
-		// Log.d("startview", "creat..");
 	}
 
 	@Override
 	public void run() {
-		// super.run();
 		while (threadFlag) {
-			// Log.d("startview", "flag..");
 			long startTime = System.currentTimeMillis();
 			synchronized (sfh) {
 				canvas = sfh.lockCanvas();
-				// Log.d("startview", "thread..");
-				// draw();
-
+				draw();
 				sfh.unlockCanvasAndPost(canvas);
 			}
 			long endTime = System.currentTimeMillis();
@@ -72,18 +67,13 @@ public class StartView extends BaseView {
 	public void surfaceCreated(SurfaceHolder holder) {
 		// TODO Auto-generated method stub
 		super.surfaceCreated(holder);
-
-		// initBitmap();
-
-		// Log.d("startview", "thread  start..");
+		initBitmap();
 		if (thread.isAlive()) {
 			thread.start();
 		} else {
 			thread = new Thread(this);
 			thread.start();
 		}
-
-		// Log.d("startview", "thread  start..");
 	}
 
 	@Override
@@ -96,66 +86,52 @@ public class StartView extends BaseView {
 	@Override
 	public void draw() {
 		canvas.save();
+		canvas.scale(scaleWidth, scaleHeight, 0, 0);
 		canvas.drawBitmap(background, 0, 0, paint);
 		canvas.restore();
-		canvas.save();
 		canvas.drawBitmap(title, titleX, titleY, paint);
-		canvas.restore();
-		if (isPressStart) {
-			canvas.save();
+		if (!isPressStart) {
 			canvas.drawBitmap(buttonStart, buttonX, buttonYStart, paint);
-			canvas.restore();
 		} else {
-			canvas.save();
 			canvas.drawBitmap(buttonStart2, buttonX, buttonYStart, paint);
-			canvas.restore();
 		}
-		if (isPressEnd) {
-			canvas.save();
+		if (!isPressEnd) {
 			canvas.drawBitmap(buttonEnd, buttonX, buttonYEnd, paint);
-			canvas.restore();
 		} else {
-			canvas.save();
 			canvas.drawBitmap(buttonEnd2, buttonX, buttonYEnd, paint);
-			canvas.restore();
 		}
-		if (isPressAbout) {
-			canvas.save();
+		if (!isPressAbout) {
 			canvas.drawBitmap(buttonAbout, buttonX, buttonYAbout, paint);
-			canvas.restore();
 		} else {
-			canvas.save();
 			canvas.drawBitmap(buttonAbout2, buttonX, buttonYAbout, paint);
-			canvas.restore();
 		}
 	}
 
 	@Override
 	public void initBitmap() {
-		// TODO Auto-generated method stub
 		canvas = new Canvas();
 		paint = new Paint();
-		// background = BitmapFactory.decodeResource(getResources(),
-		// R.drawable.background_start);
-		// title = BitmapFactory.decodeResource(getResources(),
-		// R.drawable.title);
+		background = BitmapFactory.decodeResource(getResources(),
+				R.drawable.background_start);
+		title = BitmapFactory.decodeResource(getResources(), R.drawable.title);
 		buttonStart = BitmapFactory.decodeResource(getResources(),
-				R.drawable.pause);
+				R.drawable.button_start);
 		// buttonStart2 = BitmapFactory.decodeResource(getResources(),
 		// R.drawable.button_start2);
-		// buttonEnd = BitmapFactory.decodeResource(getResources(),
-		// R.drawable.button_end);
+		buttonEnd = BitmapFactory.decodeResource(getResources(),
+				R.drawable.button_end);
 		// buttonEnd2 = BitmapFactory.decodeResource(getResources(),
 		// R.drawable.button_end2);
-		// buttonAbout = BitmapFactory.decodeResource(getResources(),
-		// R.drawable.button_about);
+		buttonAbout = BitmapFactory.decodeResource(getResources(),
+				R.drawable.button_about);
 		// buttonAbout2 = BitmapFactory.decodeResource(getResources(),
 		// R.drawable.button_about2);
-
-		titleX = 0;
-		titleY = 0;
-		buttonInterval = 10;
-		buttonX = this.screenWidth / 3;
+		scaleWidth = screenWidth / background.getWidth();
+		scaleHeight = screenHeight / background.getHeight();
+		titleX = screenWidth / 2 - title.getWidth() / 2;
+		titleY = 50;
+		buttonInterval = 30;
+		buttonX = screenWidth / 2 - buttonStart.getWidth() / 2;
 		buttonYStart = titleY + title.getHeight() + buttonInterval;
 		buttonYEnd = buttonYStart + buttonStart.getHeight() + buttonInterval;
 		buttonYAbout = buttonYEnd + buttonEnd.getHeight() + buttonInterval;
@@ -163,31 +139,31 @@ public class StartView extends BaseView {
 
 	@Override
 	public boolean onTouchEvent(MotionEvent event) {
-		if (event.getAction() == event.ACTION_DOWN) {
+		if (event.getAction() == MotionEvent.ACTION_DOWN) {
 			float x = event.getX();
 			float y = event.getY();
 			if (x > buttonX && x < buttonX + buttonStart.getWidth()
 					&& y > buttonYStart
 					&& y < buttonYStart + buttonStart.getHeight()) {
 				isPressStart = true;
-				draw();
+				// draw();
 				mainActivity.getHandler().sendEmptyMessage(this.MAIN_VIEW);
 				return true;
 			} else if (x > buttonX && x < buttonX + buttonEnd.getWidth()
 					&& y > buttonYEnd && y < buttonYEnd + buttonEnd.getHeight()) {
 				isPressEnd = true;
-				draw();
+				// draw();
 				mainActivity.getHandler().sendEmptyMessage(this.END_GAME);
 				return true;
 			} else if (x > buttonX && x < buttonX + buttonAbout.getWidth()
 					&& y > buttonYAbout
 					&& y < buttonYStart + buttonAbout.getHeight()) {
 				isPressAbout = true;
-				draw();
+				// draw();
 				mainActivity.getHandler().sendEmptyMessage(this.ABOUT_VIEW);
 				return true;
 			}
-		} else if (event.getAction() == event.ACTION_UP) {
+		} else if (event.getAction() == MotionEvent.ACTION_UP) {
 			isPressAbout = isPressEnd = isPressStart = false;
 			return true;
 		}

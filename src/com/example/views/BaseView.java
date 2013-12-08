@@ -5,6 +5,7 @@ import com.example.gofightyourself.MainActivity;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
+import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
@@ -18,11 +19,15 @@ public class BaseView extends SurfaceView implements SurfaceHolder.Callback,
 	public boolean threadFlag; // flag thread run status
 	public float screenWidth;
 	public float screenHeight;
+	public float scaleWidth;
+	public float scaleHeight;
+	public boolean isWin;
 	public static final int TIME_IN_FRAME = 20;
 
 	public MainActivity mainActivity;
 	public final int MAIN_VIEW = 1;
-	public final int WIN_VIEW = 2;
+	// public final int WIN_VIEW = 2;
+	public final int END_VIEW = 2;
 	public final int DIE_VIEW = 3;
 	public final int ABOUT_VIEW = 4;
 	public final int END_GAME = 5;
@@ -70,7 +75,16 @@ public class BaseView extends SurfaceView implements SurfaceHolder.Callback,
 
 	// change bitmap scale to fit screen
 	public Bitmap changeBitmap(Bitmap originImage, int newWidth, int newHeight) {
-		return originImage;
+		// TODO Auto-generated method stub
+		int width = originImage.getWidth();
+		int height = originImage.getHeight();
+		scaleWidth = ((float) newWidth) / width;
+		scaleHeight = ((float) newHeight) / height;
+		Matrix matrix = new Matrix();
+		matrix.postScale(scaleWidth, scaleHeight);
+		Bitmap newBitmap = Bitmap.createBitmap(originImage, 0, 0, width,
+				height, matrix, true);
+		return newBitmap;
 	}
 
 	// draw bitmap resource
@@ -79,5 +93,9 @@ public class BaseView extends SurfaceView implements SurfaceHolder.Callback,
 
 	// release bitmap resource
 	public void release() {
+	}
+
+	public void setWin(boolean isWin) {
+		this.isWin = isWin;
 	}
 }

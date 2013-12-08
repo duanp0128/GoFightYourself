@@ -12,8 +12,9 @@ import android.view.Menu;
 public class MainActivity extends Activity {
 	private StartView startView;
 	private MainView mainView;
-	private WinView winView;
-	private DieView dieView;
+	private EndView endView;
+	// private WinView winView;
+	// private DieView dieView;
 	private AboutView aboutView;
 	private Handler handler = new Handler() {
 		@Override
@@ -23,11 +24,9 @@ public class MainActivity extends Activity {
 				toMainView();
 				break;
 			case 2:
-				toWinView();
+				toEndView();
 				break;
-			case 3:
-				toDieView();
-				break;
+
 			case 4:
 				toAboutView();
 				break;
@@ -41,10 +40,10 @@ public class MainActivity extends Activity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		// startView = new StartView(this);
-		// setContentView(startView);
-		mainView = new MainView(this);
-		setContentView(mainView);
+		startView = new StartView(this);
+		setContentView(startView);
+		// mainView = new MainView(this);
+		// setContentView(mainView);
 	}
 
 	// show game mainview
@@ -54,32 +53,20 @@ public class MainActivity extends Activity {
 		}
 		setContentView(mainView);
 		startView = null;
-		winView = null;
-		dieView = null;
+		endView = null;
+		// winView = null;
+		// dieView = null;
 		aboutView = null;
 	}
 
 	// show game win view
-	public void toWinView() {
-		if (winView == null) {
-			winView = new WinView(this);
+	public void toEndView() {
+		if (endView == null) {
+			endView = new EndView(this);
 		}
-		setContentView(winView);
+		setContentView(endView);
 		mainView = null;
 		startView = null;
-		dieView = null;
-		aboutView = null;
-	}
-
-	// show game die view
-	public void toDieView() {
-		if (dieView == null) {
-			dieView = new DieView(this);
-		}
-		setContentView(dieView);
-		mainView = null;
-		startView = null;
-		winView = null;
 		aboutView = null;
 	}
 
@@ -91,8 +78,7 @@ public class MainActivity extends Activity {
 		setContentView(aboutView);
 		mainView = null;
 		startView = null;
-		winView = null;
-		dieView = null;
+		endView = null;
 	}
 
 	// end game
@@ -101,10 +87,8 @@ public class MainActivity extends Activity {
 			startView.setThreadFlag(false);
 		} else if (mainView != null) {
 			mainView.setThreadFlag(false);
-		} else if (winView != null) {
-			winView.setThreadFlag(false);
-		} else if (dieView != null) {
-			dieView.setThreadFlag(false);
+		} else if (endView != null) {
+			endView.setThreadFlag(false);
 		}
 		this.finish();
 	}
