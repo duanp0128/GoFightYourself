@@ -2,7 +2,6 @@ package com.example.views;
 
 import java.util.LinkedList;
 
-import com.example.gofightyourself.R;
 import com.example.objects.Game;
 import com.example.objects.Plane;
 import com.example.sounds.GameSoundPool;
@@ -59,15 +58,15 @@ public class MainView extends BaseView {
 
 		canvas = new Canvas();
 		paint = new Paint();
-		background = BitmapFactory.decodeResource(getResources(),
-				R.drawable.background);
-		ownPlane = BitmapFactory.decodeResource(getResources(),
-				R.drawable.human_own);
-		enemyPlane = BitmapFactory.decodeResource(getResources(),
-				R.drawable.human_front);
-		bullet = BitmapFactory.decodeResource(getResources(), R.drawable.biao);
-		buttonFire = BitmapFactory.decodeResource(getResources(),
-				R.drawable.button_fire);
+//		background = BitmapFactory.decodeResource(getResources(),
+//				R.drawable.background);
+//		ownPlane = BitmapFactory.decodeResource(getResources(),
+//				R.drawable.human_own);
+//		enemyPlane = BitmapFactory.decodeResource(getResources(),
+//				R.drawable.human_front);
+//		bullet = BitmapFactory.decodeResource(getResources(), R.drawable.biao);
+//		buttonFire = BitmapFactory.decodeResource(getResources(),
+//				R.drawable.button_fire);
 		scaleWidth = screenWidth / background.getWidth();
 		scaleHeight = screenHeight / background.getHeight();
 		// buttonNoFire = BitmapFactory.decodeResource(getResources(),

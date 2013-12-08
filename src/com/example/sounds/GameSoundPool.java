@@ -3,7 +3,6 @@ package com.example.sounds;
 import java.util.HashMap;
 
 import com.example.gofightyourself.MainActivity;
-import com.example.gofightyourself.R;
 
 import android.content.Context;
 import android.media.AudioManager;

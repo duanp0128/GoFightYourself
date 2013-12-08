@@ -1,6 +1,5 @@
 package com.example.views;
 
-import com.example.gofightyourself.R;
 import com.example.sounds.GameSoundPool;
 
 import android.content.Context;
@@ -79,18 +78,18 @@ public class EndView extends BaseView {
 	public void initBitmap() {
 		canvas = new Canvas();
 		paint = new Paint();
-		background = BitmapFactory.decodeResource(getResources(),
-				R.drawable.background);
-		title1 = BitmapFactory.decodeResource(getResources(),
-				R.drawable.title_win);
-		title2 = BitmapFactory.decodeResource(getResources(),
-				R.drawable.title_die);
-		buttonNext = BitmapFactory.decodeResource(getResources(),
-				R.drawable.next);
-		buttonExit = BitmapFactory.decodeResource(getResources(),
-				R.drawable.button_exit);
-		buttonAgain = BitmapFactory.decodeResource(getResources(),
-				R.drawable.button_again);
+//		background = BitmapFactory.decodeResource(getResources(),
+//				R.drawable.background);
+//		title1 = BitmapFactory.decodeResource(getResources(),
+//				R.drawable.title_win);
+//		title2 = BitmapFactory.decodeResource(getResources(),
+//				R.drawable.title_die);
+//		buttonNext = BitmapFactory.decodeResource(getResources(),
+//				R.drawable.next);
+//		buttonExit = BitmapFactory.decodeResource(getResources(),
+//				R.drawable.menu);
+//		buttonAgain = BitmapFactory.decodeResource(getResources(),
+//				R.drawable.retry);
 		scaleWidth = screenWidth / background.getWidth();
 		scaleHeight = screenHeight / background.getHeight();
 		titleX = screenWidth / 2 - title1.getWidth() / 2;

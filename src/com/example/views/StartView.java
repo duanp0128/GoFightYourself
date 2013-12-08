@@ -1,6 +1,5 @@
 package com.example.views;
 
-import com.example.gofightyourself.R;
 import com.example.sounds.GameSoundPool;
 
 import android.content.Context;
@@ -16,14 +15,8 @@ public class StartView extends BaseView {
 	private Bitmap background;
 	private Bitmap title;
 	private Bitmap buttonStart;
-	private Bitmap buttonStart2;
 	private Bitmap buttonEnd;
-	private Bitmap buttonEnd2;
 	private Bitmap buttonAbout;
-	private Bitmap buttonAbout2;
-	private boolean isPressStart;
-	private boolean isPressEnd;
-	private boolean isPressAbout;
 	private float titleX; // x-coordinate of title
 	private float titleY; // y-coordinate of title
 	private float buttonX; // x-coordinate of button
@@ -34,7 +27,6 @@ public class StartView extends BaseView {
 
 	public StartView(Context context, GameSoundPool soundPool) {
 		super(context, soundPool);
-		isPressStart = isPressEnd = isPressAbout = false;
 		thread = new Thread(this);
 	}
 
@@ -92,42 +84,24 @@ public class StartView extends BaseView {
 		canvas.drawBitmap(background, 0, 0, paint);
 		canvas.restore();
 		canvas.drawBitmap(title, titleX, titleY, paint);
-		// if (!isPressStart) {
 		canvas.drawBitmap(buttonStart, buttonX, buttonYStart, paint);
-		// } else {
-		// canvas.drawBitmap(buttonStart2, buttonX, buttonYStart, paint);
-		// }
-		if (!isPressEnd) {
-			canvas.drawBitmap(buttonEnd, buttonX, buttonYEnd, paint);
-		} else {
-			canvas.drawBitmap(buttonEnd2, buttonX, buttonYEnd, paint);
-		}
-		if (!isPressAbout) {
-			canvas.drawBitmap(buttonAbout, buttonX, buttonYAbout, paint);
-		} else {
-			canvas.drawBitmap(buttonAbout2, buttonX, buttonYAbout, paint);
-		}
+		canvas.drawBitmap(buttonEnd, buttonX, buttonYEnd, paint);
+		canvas.drawBitmap(buttonAbout, buttonX, buttonYAbout, paint);
 	}
 
 	@Override
 	public void initBitmap() {
 		canvas = new Canvas();
 		paint = new Paint();
-		background = BitmapFactory.decodeResource(getResources(),
-				R.drawable.background_start);
-		title = BitmapFactory.decodeResource(getResources(), R.drawable.title);
-		buttonStart = BitmapFactory.decodeResource(getResources(),
-				R.drawable.button_start);
-		// buttonStart2 = BitmapFactory.decodeResource(getResources(),
-		// R.drawable.button_start2);
-		buttonEnd = BitmapFactory.decodeResource(getResources(),
-				R.drawable.button_end);
-		// buttonEnd2 = BitmapFactory.decodeResource(getResources(),
-		// R.drawable.button_end2);
-		buttonAbout = BitmapFactory.decodeResource(getResources(),
-				R.drawable.button_about);
-		// buttonAbout2 = BitmapFactory.decodeResource(getResources(),
-		// R.drawable.button_about2);
+//		background = BitmapFactory.decodeResource(getResources(),
+//				R.drawable.background);
+//		title = BitmapFactory.decodeResource(getResources(), R.drawable.title);
+//		buttonStart = BitmapFactory.decodeResource(getResources(),
+//				R.drawable.start);
+//		buttonEnd = BitmapFactory.decodeResource(getResources(),
+//				R.drawable.exit);
+//		buttonAbout = BitmapFactory.decodeResource(getResources(),
+//				R.drawable.about);
 		scaleWidth = screenWidth / background.getWidth();
 		scaleHeight = screenHeight / background.getHeight();
 		titleX = screenWidth / 2 - title.getWidth() / 2;
@@ -147,27 +121,18 @@ public class StartView extends BaseView {
 			if (x > buttonX && x < buttonX + buttonStart.getWidth()
 					&& y > buttonYStart
 					&& y < buttonYStart + buttonStart.getHeight()) {
-				isPressStart = true;
-				// draw();
 				mainActivity.getHandler().sendEmptyMessage(this.MAIN_VIEW);
 				return true;
 			} else if (x > buttonX && x < buttonX + buttonEnd.getWidth()
 					&& y > buttonYEnd && y < buttonYEnd + buttonEnd.getHeight()) {
-				isPressEnd = true;
-				// draw();
 				mainActivity.getHandler().sendEmptyMessage(this.END_GAME);
 				return true;
 			} else if (x > buttonX && x < buttonX + buttonAbout.getWidth()
 					&& y > buttonYAbout
 					&& y < buttonYStart + buttonAbout.getHeight()) {
-				isPressAbout = true;
-				// draw();
 				mainActivity.getHandler().sendEmptyMessage(this.ABOUT_VIEW);
 				return true;
 			}
-		} else if (event.getAction() == MotionEvent.ACTION_UP) {
-			isPressAbout = isPressEnd = isPressStart = false;
-			return true;
 		}
 		return false;
 	}

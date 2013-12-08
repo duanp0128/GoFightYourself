@@ -1,6 +1,5 @@
 package com.example.views;
 
-import com.example.gofightyourself.R;
 import com.example.sounds.GameSoundPool;
 
 import android.content.Context;
@@ -71,12 +70,12 @@ public class AboutView extends BaseView {
 	public void initBitmap() {
 		canvas = new Canvas();
 		paint = new Paint();
-		background = BitmapFactory.decodeResource(getResources(),
-				R.drawable.background);
-		buttonBack = BitmapFactory.decodeResource(getResources(),
-				R.drawable.buttonBack);
-		text = BitmapFactory.decodeResource(getResources(),
-				R.drawable.aboutText);
+//		background = BitmapFactory.decodeResource(getResources(),
+//				R.drawable.background);
+//		buttonBack = BitmapFactory.decodeResource(getResources(),
+//				R.drawable.buttonBack);
+//		text = BitmapFactory.decodeResource(getResources(),
+//				R.drawable.aboutText);
 		scaleWidth = screenWidth / background.getWidth();
 		scaleHeight = screenHeight / background.getHeight();
 	}
@@ -103,12 +102,12 @@ public class AboutView extends BaseView {
 		case MotionEvent.ACTION_DOWN:
 			float x = event.getX();
 			float y = event.getY();
-			if (x > buttonX && x < buttonX + buttonNext.getWidth()
-					&& y > buttonY1 && y < buttonY1 + buttonNext.getHeight()) {
-				setWin(false);
-				mainActivity.getHandler().sendEmptyMessage(START_VIEW);
-				return true;
-			}
+//			if (x > buttonX && x < buttonX + buttonNext.getWidth()
+//					&& y > buttonY1 && y < buttonY1 + buttonNext.getHeight()) {
+//				setWin(false);
+//				mainActivity.getHandler().sendEmptyMessage(START_VIEW);
+//				return true;
+//			}
 			return false;
 		default:
 			return false;
