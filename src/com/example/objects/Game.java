@@ -24,27 +24,30 @@ public class Game {
 		this.enemyPlaneList = new LinkedList<Plane>();
 		this.enemyBulletList = new LinkedList<Bullet>();
 		this.ownBulletList = new LinkedList<Bullet>();
-		this.ownPlane = new Plane(this.width/2,(float) (this.height*0.8));
-		if(newGame){
+		this.ownPlane = new Plane(this.width / 2, (float) (this.height * 0.8));
+		if (newGame) {
 			Game.level = 0;
 			Game.planeList = new LinkedList<Plane>();
-			newLevel();
+			newLevel(true);
 		}
 	}
 
 	@SuppressWarnings("unchecked")
-	public void newLevel() {
-		Game.level++;
+	public void newLevel(boolean levelup) {
+
 		this.t = 0;
 		this.status = 0;
 		this.fired = false;
 		ownPlane.mirror(this.height);
-		Game.planeList.add(ownPlane);
+		if (levelup) {
+			Game.planeList.add(ownPlane);
+			Game.level++;
+		}
 		this.enemyPlaneList.clear();
 		this.enemyPlaneList = (LinkedList<Plane>) Game.planeList.clone();
 		this.enemyBulletList = new LinkedList<Bullet>();
 		this.ownBulletList = new LinkedList<Bullet>();
-		this.ownPlane = new Plane(this.width/2,(float) (this.height*0.8));
+		this.ownPlane = new Plane(this.width / 2, (float) (this.height * 0.8));
 
 		// create initial bullets.
 		for (float i = Bullet.width; i < this.width; i += (Bullet.width * 2)) {
@@ -55,18 +58,16 @@ public class Game {
 
 	public int update(float xVal, float yVal, boolean fire) {
 		ownPlane.move(xVal, yVal, fire);
-		if(fire){
-			if(fired){
+		if (fire) {
+			if (fired) {
 				fire = false;
-			}
-			else{
+			} else {
 				fired = true;
 			}
-		}
-		else if(fired){
+		} else if (fired) {
 			fired = false;
 		}
-		
+
 		if (fire) {
 			ownBulletList.add(new Bullet(xVal, yVal, 0, -this.height / 30));
 		}
@@ -89,7 +90,7 @@ public class Game {
 
 	private void updateBulletList(LinkedList<Bullet> bulletList) {
 		Iterator<Bullet> iterBullet = bulletList.iterator();
-		while(iterBullet.hasNext()){
+		while (iterBullet.hasNext()) {
 			Bullet bullet = iterBullet.next();
 			bullet.move();
 			if (bullet.x < 0 || bullet.x > this.width || bullet.y < 0
@@ -102,11 +103,11 @@ public class Game {
 	public void updateEnemyPlaneList() {
 		boolean dead;
 		Iterator<Plane> iterPlane = enemyPlaneList.iterator();
-		while(iterPlane.hasNext()){
+		while (iterPlane.hasNext()) {
 			Plane plane = iterPlane.next();
 			dead = false;
 			Iterator<Bullet> iterBullet = ownBulletList.iterator();
-			while(iterBullet.hasNext()){
+			while (iterBullet.hasNext()) {
 				Bullet bullet = iterBullet.next();
 				if (plane.getShot(bullet, t)) {
 					iterPlane.remove();
@@ -158,13 +159,16 @@ public class Game {
 
 	private void win() {
 		this.status = 1;
+		this.newLevel(true);
 	}
 
 	private void gameover() {
 		this.status = 2;
+		this.newLevel(false);
 	}
-	
-	public int getLevel(){
+
+	public int getLevel() {
 		return Game.level;
 	}
+
 }
