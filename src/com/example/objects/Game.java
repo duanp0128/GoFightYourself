@@ -58,6 +58,7 @@ public class Game {
 
 	public int update(float xVal, float yVal, boolean fire) {
 		ownPlane.move(xVal, yVal, fire);
+		t++;
 		if (fire) {
 			if (fired) {
 				fire = false;
