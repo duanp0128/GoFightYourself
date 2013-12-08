@@ -1,21 +1,22 @@
 package com.example.objects;
 
+import java.util.Iterator;
 import java.util.LinkedList;
 
 public class Game {
-	int level;
+	static int level;
 	int t;
 	int status;
 	float width;
 	float height;
+	boolean fired;
 	LinkedList<Plane> enemyPlaneList;
 	LinkedList<Bullet> enemyBulletList;
 	LinkedList<Bullet> ownBulletList;
-	LinkedList<Plane> planeList;
+	static LinkedList<Plane> planeList;
 	Plane ownPlane;
 
-	public Game(float width, float height) {
-		this.level = 0;
+	public Game(float width, float height, boolean newGame) {
 		this.t = 0;
 		this.status = 0;
 		this.width = width;
@@ -23,48 +24,49 @@ public class Game {
 		this.enemyPlaneList = new LinkedList<Plane>();
 		this.enemyBulletList = new LinkedList<Bullet>();
 		this.ownBulletList = new LinkedList<Bullet>();
-		this.planeList = new LinkedList<Plane>();
 		this.ownPlane = new Plane(this.width/2,(float) (this.height*0.8));
-		newLevel();
-	}
-
-	public void newLevel() {
-		this.level++;
-		this.t = 0;
-		this.status = 0;
-		ownPlane.mirror(this.height);
-		this.planeList.add(ownPlane);
-		this.enemyPlaneList.clear();
-		this.enemyPlaneList = (LinkedList<Plane>) planeList.clone();
-		this.enemyBulletList = new LinkedList<Bullet>();
-		this.ownBulletList = new LinkedList<Bullet>();
-		this.ownPlane = new Plane(this.width/2,(float) (this.height*0.8));
-
-		// create initial bullets.
-		for (float i = Bullet.width; i < this.width; i += (Bullet.width * 2)) {
-			enemyBulletList.add(new Bullet(i, 0, 0, this.height
-					/ ((this.level * 2 + 8) * 30)));
+		if(newGame){
+			Game.level = 0;
+			Game.planeList = new LinkedList<Plane>();
+			newLevel();
 		}
 	}
-	
-	public void reset() {
+
+	@SuppressWarnings("unchecked")
+	public void newLevel() {
+		Game.level++;
 		this.t = 0;
 		this.status = 0;
+		this.fired = false;
+		ownPlane.mirror(this.height);
+		Game.planeList.add(ownPlane);
 		this.enemyPlaneList.clear();
-		this.enemyPlaneList = (LinkedList<Plane>) planeList.clone();
+		this.enemyPlaneList = (LinkedList<Plane>) Game.planeList.clone();
 		this.enemyBulletList = new LinkedList<Bullet>();
 		this.ownBulletList = new LinkedList<Bullet>();
-		this.ownPlane = new Plane();
+		this.ownPlane = new Plane(this.width/2,(float) (this.height*0.8));
 
 		// create initial bullets.
 		for (float i = Bullet.width; i < this.width; i += (Bullet.width * 2)) {
 			enemyBulletList.add(new Bullet(i, 0, 0, this.height
-					/ ((this.level * 2 + 8) * 30)));
+					/ ((Game.level * 2 + 8) * 30)));
 		}
 	}
 
 	public int update(float xVal, float yVal, boolean fire) {
 		ownPlane.move(xVal, yVal, fire);
+		if(fire){
+			if(fired){
+				fire = false;
+			}
+			else{
+				fired = true;
+			}
+		}
+		else if(fired){
+			fired = false;
+		}
+		
 		if (fire) {
 			ownBulletList.add(new Bullet(xVal, yVal, 0, -this.height / 30));
 		}
@@ -86,23 +88,29 @@ public class Game {
 	}
 
 	private void updateBulletList(LinkedList<Bullet> bulletList) {
-		for (Bullet bullet : bulletList) {
+		Iterator<Bullet> iterBullet = bulletList.iterator();
+		while(iterBullet.hasNext()){
+			Bullet bullet = iterBullet.next();
 			bullet.move();
 			if (bullet.x < 0 || bullet.x > this.width || bullet.y < 0
 					|| bullet.y > this.height) {
-				bulletList.remove(bullet);
+				iterBullet.remove();
 			}
 		}
 	}
 
 	public void updateEnemyPlaneList() {
 		boolean dead;
-		for (Plane plane : enemyPlaneList) {
+		Iterator<Plane> iterPlane = enemyPlaneList.iterator();
+		while(iterPlane.hasNext()){
+			Plane plane = iterPlane.next();
 			dead = false;
-			for (Bullet bullet : ownBulletList) {
+			Iterator<Bullet> iterBullet = ownBulletList.iterator();
+			while(iterBullet.hasNext()){
+				Bullet bullet = iterBullet.next();
 				if (plane.getShot(bullet, t)) {
-					enemyPlaneList.remove(plane);
-					ownBulletList.remove(bullet);
+					iterPlane.remove();
+					iterBullet.remove();
 					dead = true;
 					break;
 				}
