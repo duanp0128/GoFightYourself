@@ -57,7 +57,6 @@ public class Game {
 	}
 
 	public int update(float xVal, float yVal, boolean fire) {
-		ownPlane.move(xVal, yVal, fire);
 		t++;
 		if (fire) {
 			if (fired) {
@@ -69,6 +68,7 @@ public class Game {
 			fired = false;
 		}
 
+		ownPlane.move(xVal, yVal, fire);
 		if (fire) {
 			ownBulletList.add(new Bullet(xVal, yVal, 0, -this.height / 30));
 		}
