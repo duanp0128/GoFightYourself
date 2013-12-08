@@ -28,6 +28,7 @@ public class MainView extends BaseView {
 	private float dx;
 	private float dy;
 	private int level;
+	private boolean isNewGame;
 	// bitmap resource
 	private Bitmap background;
 	private Bitmap ownPlane;
@@ -42,6 +43,7 @@ public class MainView extends BaseView {
 		level = 1;
 		isFire = false;
 		isPlaneTouched = false;
+		isNewGame = true;
 
 		thread = new Thread(this);
 	}
@@ -61,22 +63,8 @@ public class MainView extends BaseView {
 	}
 
 	@Override
-	public Bitmap changeBitmap(Bitmap originImage, int newWidth, int newHeight) {
-		// TODO Auto-generated method stub
-		int width = originImage.getWidth();
-		int height = originImage.getHeight();
-		float scaleWidth = ((float) newWidth) / width;
-		float scaleHeight = ((float) newHeight) / height;
-		Matrix matrix = new Matrix();
-		matrix.postScale(scaleWidth, scaleHeight);
-		Bitmap newBitmap = Bitmap.createBitmap(originImage, 0, 0, width,
-				height, matrix, true);
-		return newBitmap;
-	}
-
-	@Override
 	public void initBitmap() {
-		game = new Game(screenWidth, screenHeight);
+		game = new Game(screenWidth, screenHeight, isNewGame);
 		planeX = (float) (screenWidth * 0.5);
 		planeY = (float) (screenHeight * 0.8);
 		gameStatus = game.update(planeX, planeY, isFire);
@@ -102,8 +90,8 @@ public class MainView extends BaseView {
 		gameStatus = game.update(planeX, planeY, isFire);
 		// draw background
 		canvas.save();
-		canvas.drawColor(Color.WHITE);
-		// canvas.drawBitmap(background, 0, 0, paint);
+		canvas.scale(scaleWidth, scaleHeight, 0, 0);
+		canvas.drawBitmap(background, 0, 0, paint);
 		canvas.restore();
 		// draw fire button
 		canvas.save();
@@ -148,15 +136,17 @@ public class MainView extends BaseView {
 		if (gameStatus == 1) {
 			level++;
 			game.newLevel();
-			Log.d("main", "win..");
-			mainActivity.getHandler().sendEmptyMessage(WIN_VIEW);
+			setWin(true);
+			isNewGame = false;
+			mainActivity.getHandler().sendEmptyMessage(END_VIEW);
 		}
 
 		/** die **/
 		if (gameStatus == 2) {
 			game.reset();
-			Log.d("main", "die..");
-			mainActivity.getHandler().sendEmptyMessage(DIE_VIEW);
+			setWin(false);
+			isNewGame = true;
+			mainActivity.getHandler().sendEmptyMessage(END_VIEW);
 		}
 	}
 
@@ -188,10 +178,13 @@ public class MainView extends BaseView {
 	@Override
 	public void surfaceCreated(SurfaceHolder holder) {
 		super.surfaceCreated(holder);
-		// Log.d("plane", "" + screenWidth);
 		initBitmap();
-		thread = new Thread(this);
-		thread.start();
+		if (thread.isAlive()) {
+			thread.start();
+		} else {
+			thread = new Thread(this);
+			thread.start();
+		}
 	}
 
 	@Override
