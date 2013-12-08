@@ -3,6 +3,7 @@ package com.example.views;
 import com.example.gofightyourself.MainActivity;
 
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.view.SurfaceHolder;
@@ -65,6 +66,11 @@ public class BaseView extends SurfaceView implements SurfaceHolder.Callback,
 	// initial bitmap resource
 	public void initBitmap() {
 
+	}
+
+	// change bitmap scale to fit screen
+	public Bitmap changeBitmap(Bitmap originImage, int newWidth, int newHeight) {
+		return originImage;
 	}
 
 	// draw bitmap resource

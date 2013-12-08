@@ -10,6 +10,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.util.Log;
 import android.view.MotionEvent;
@@ -45,6 +46,34 @@ public class MainView extends BaseView {
 		thread = new Thread(this);
 	}
 
+	// plane whether move outside screen
+	private boolean outsideScreen(float x, float y, Bitmap object) {
+		float object_left = x - object.getWidth() / 2;
+		float object_top = y - object.getHeight() / 2;
+		float object_right = x + object.getWidth() / 2;
+		float object_bottom = y + object.getHeight() / 2;
+
+		if (object_left < 0 || object_right > screenWidth || object_top < 0
+				|| object_bottom > screenHeight) {
+			return true;
+		}
+		return false;
+	}
+
+	@Override
+	public Bitmap changeBitmap(Bitmap originImage, int newWidth, int newHeight) {
+		// TODO Auto-generated method stub
+		int width = originImage.getWidth();
+		int height = originImage.getHeight();
+		float scaleWidth = ((float) newWidth) / width;
+		float scaleHeight = ((float) newHeight) / height;
+		Matrix matrix = new Matrix();
+		matrix.postScale(scaleWidth, scaleHeight);
+		Bitmap newBitmap = Bitmap.createBitmap(originImage, 0, 0, width,
+				height, matrix, true);
+		return newBitmap;
+	}
+
 	@Override
 	public void initBitmap() {
 		game = new Game(screenWidth, screenHeight);
@@ -74,7 +103,7 @@ public class MainView extends BaseView {
 		// draw background
 		canvas.save();
 		canvas.drawColor(Color.WHITE);
-		canvas.drawBitmap(background, 0, 0, paint);
+		// canvas.drawBitmap(background, 0, 0, paint);
 		canvas.restore();
 		// draw fire button
 		canvas.save();
@@ -83,8 +112,6 @@ public class MainView extends BaseView {
 		} else {
 			canvas.drawBitmap(buttonFire, 5, 5, paint);
 		}
-
-		Log.d("pic", "" + ownPlane.getWidth());
 		canvas.restore();
 		// draw level status
 		canvas.save();
@@ -94,8 +121,6 @@ public class MainView extends BaseView {
 				paint);
 		canvas.restore();
 		// draw own plane
-		// Log.d("plane", "x:" + planeX + " y:" + planeY);
-
 		canvas.save();
 		canvas.drawBitmap(ownPlane, planeX - ownPlane.getWidth() / 2, planeY
 				- ownPlane.getHeight() / 2, paint);
