@@ -163,4 +163,8 @@ public class Game {
 	private void gameover() {
 		this.status = 2;
 	}
+	
+	public int getLevel(){
+		return Game.level;
+	}
 }
