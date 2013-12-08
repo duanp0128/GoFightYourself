@@ -7,6 +7,7 @@ import android.os.Handler;
 import android.os.Message;
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.util.Log;
 import android.view.Menu;
 
 public class MainActivity extends Activity {
@@ -50,6 +51,7 @@ public class MainActivity extends Activity {
 	public void toMainView() {
 		if (mainView == null) {
 			mainView = new MainView(this);
+			// Log.d("mainview","new");
 		}
 		setContentView(mainView);
 		startView = null;

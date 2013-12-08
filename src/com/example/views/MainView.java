@@ -27,7 +27,6 @@ public class MainView extends BaseView {
 	private float planeY;
 	private float dx;
 	private float dy;
-	private int level;
 	private boolean isNewGame;
 	// bitmap resource
 	private Bitmap background;
@@ -40,7 +39,6 @@ public class MainView extends BaseView {
 	public MainView(Context context) {
 		super(context);
 		// initial game resource
-		level = 1;
 		isFire = false;
 		isPlaneTouched = false;
 		isNewGame = true;
@@ -67,7 +65,7 @@ public class MainView extends BaseView {
 		game = new Game(screenWidth, screenHeight, isNewGame);
 		planeX = (float) (screenWidth * 0.5);
 		planeY = (float) (screenHeight * 0.8);
-		gameStatus = game.update(planeX, planeY, isFire);
+		setWin(false);
 
 		canvas = new Canvas();
 		paint = new Paint();
@@ -81,6 +79,8 @@ public class MainView extends BaseView {
 				.decodeResource(getResources(), R.drawable.bullet);
 		buttonFire = BitmapFactory.decodeResource(getResources(),
 				R.drawable.button_fire);
+		scaleWidth = screenWidth / background.getWidth();
+		scaleHeight = screenHeight / background.getHeight();
 		// buttonNoFire = BitmapFactory.decodeResource(getResources(),
 		// R.drawable.button_nofire);
 	}
@@ -88,6 +88,17 @@ public class MainView extends BaseView {
 	@Override
 	public void draw() {
 		gameStatus = game.update(planeX, planeY, isFire);
+		/** win **/
+		if (gameStatus == 1) {
+			setWin(true);
+			mainActivity.getHandler().sendEmptyMessage(END_VIEW);
+		}
+
+		/** die **/
+		if (gameStatus == 2) {
+			setWin(false);
+			mainActivity.getHandler().sendEmptyMessage(END_VIEW);
+		}
 		// draw background
 		canvas.save();
 		canvas.scale(scaleWidth, scaleHeight, 0, 0);
@@ -105,8 +116,8 @@ public class MainView extends BaseView {
 		canvas.save();
 		paint.setTextSize(30);
 		paint.setColor(Color.rgb(235, 161, 1));
-		canvas.drawText("Level: " + String.valueOf(level), screenWidth / 3, 5,
-				paint);
+		canvas.drawText("Level: " + String.valueOf(game.getLevel()),
+				screenWidth / 3, 60, paint);
 		canvas.restore();
 		// draw own plane
 		canvas.save();
@@ -132,22 +143,6 @@ public class MainView extends BaseView {
 			canvas.restore();
 		}
 
-		/** win **/
-		if (gameStatus == 1) {
-			level++;
-			game.newLevel();
-			setWin(true);
-			isNewGame = false;
-			mainActivity.getHandler().sendEmptyMessage(END_VIEW);
-		}
-
-		/** die **/
-		if (gameStatus == 2) {
-			game.reset();
-			setWin(false);
-			isNewGame = true;
-			mainActivity.getHandler().sendEmptyMessage(END_VIEW);
-		}
 	}
 
 	@Override
@@ -195,20 +190,12 @@ public class MainView extends BaseView {
 
 	@Override
 	public boolean onTouchEvent(MotionEvent event) {
-		if (event.getAction() == MotionEvent.ACTION_MOVE) {
-			// calculate current plane coordinate
-			if (isPlaneTouched) {
-				planeX = event.getX() + dx;
-				planeY = event.getY() + dy;
-				return true;
-			}
-		} else if (event.getAction() == MotionEvent.ACTION_UP) {
-			isPlaneTouched = false;
-			isFire = false;
-			return true;
-		} else if (event.getAction() == MotionEvent.ACTION_DOWN) {
-			float x = event.getX();
-			float y = event.getY();
+		int pointCount = event.getPointerCount();
+		switch (event.getAction() & MotionEvent.ACTION_MASK) {
+		// first finger press
+		case MotionEvent.ACTION_DOWN:
+			float x = event.getX(0);
+			float y = event.getY(0);
 			// judge whether click fire button
 			if (x > 5 && x < 5 + buttonFire.getWidth() && y > 5
 					&& y < 5 + buttonFire.getHeight()) {
@@ -221,9 +208,94 @@ public class MainView extends BaseView {
 				dx = planeX - x;
 				dy = planeY - y;
 			}
-			return true;
+			break;
+		case MotionEvent.ACTION_UP:
+			isFire = isPlaneTouched = false;
+			break;
+		case MotionEvent.ACTION_POINTER_UP:
+			float x0 = event.getX();
+			float y0 = event.getY();
+			if (x0 > 5 && x0 < 5 + buttonFire.getWidth() && y0 > 5
+					&& y0 < 5 + buttonFire.getHeight()) {
+				isFire = true;
+				isPlaneTouched = false;
+			} else {
+				isFire = false;
+				isPlaneTouched = true;
+			}
+			break;
+		// second finger press
+		case MotionEvent.ACTION_POINTER_DOWN:
+			float x1 = event.getX(1);
+			float y1 = event.getY(1);
+			if (!isFire) {
+				if (x1 > 5 && x1 < 5 + buttonFire.getWidth() && y1 > 5
+						&& y1 < 5 + buttonFire.getHeight()) {
+					isFire = true;
+				}
+			}
+			break;
+		case MotionEvent.ACTION_MOVE:
+			if (isPlaneTouched) {
+				planeX = event.getX(0) + dx;
+				planeY = event.getY(0) + dy;
+			} else if (pointCount >= 2) {
+				planeX = event.getX(1) + dx;
+				planeY = event.getY(1) + dy;
+			}
+			break;
+		default:
+			return false;
 		}
-		return false;
+		return true;
+		// int pointerCount = event.getPointerCount();
+		// // one touch point
+		// if (pointerCount == 1) {
+		// switch (event.getAction()) {
+		// case MotionEvent.ACTION_MOVE:
+		// // calculate current plane coordinate
+		// if (isPlaneTouched) {
+		// planeX = event.getX() + dx;
+		// planeY = event.getY() + dy;
+		// return outsideScreen(planeX, planeY, ownPlane);
+		// return true;
+		// }
+		// case MotionEvent.ACTION_UP:
+		// isPlaneTouched = false;
+		// isFire = false;
+		// return true;
+		// case MotionEvent.ACTION_DOWN:
+		// float x = event.getX();
+		// float y = event.getY();
+		// // judge whether click fire button
+		// if (x > 5 && x < 5 + buttonFire.getWidth() && y > 5
+		// && y < 5 + buttonFire.getHeight()) {
+		// isPlaneTouched = false;
+		// isFire = true;
+		// } else {
+		// isPlaneTouched = true;
+		// isFire = false;
+		// // calculate the distance between plane and touch point
+		// dx = planeX - x;
+		// dy = planeY - y;
+		// }
+		// return true;
+		// default:
+		// return false;
+		// }
+		// }
+		// // two touch point
+		// if (pointerCount == 2) {
+		// switch (event.getAction()) {
+		// case MotionEvent.ACTION_POINTER_INDEX_MASK:
+		//
+		// break;
+		// case MotionEvent.act
+		// case MotionEvent.ACTION_POINTER_2_DOWN:
+		// default:
+		// break;
+		// }
+		// }
 	}
 
 	@Override

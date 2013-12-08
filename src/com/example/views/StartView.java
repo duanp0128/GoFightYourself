@@ -90,11 +90,11 @@ public class StartView extends BaseView {
 		canvas.drawBitmap(background, 0, 0, paint);
 		canvas.restore();
 		canvas.drawBitmap(title, titleX, titleY, paint);
-		if (!isPressStart) {
+//		if (!isPressStart) {
 			canvas.drawBitmap(buttonStart, buttonX, buttonYStart, paint);
-		} else {
-			canvas.drawBitmap(buttonStart2, buttonX, buttonYStart, paint);
-		}
+//		} else {
+//			canvas.drawBitmap(buttonStart2, buttonX, buttonYStart, paint);
+//		}
 		if (!isPressEnd) {
 			canvas.drawBitmap(buttonEnd, buttonX, buttonYEnd, paint);
 		} else {

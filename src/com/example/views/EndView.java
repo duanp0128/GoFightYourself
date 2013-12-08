@@ -138,6 +138,7 @@ public class EndView extends BaseView {
 			if (x > buttonX && x < buttonX + buttonNext.getWidth()
 					&& y > buttonY1 && y < buttonY1 + buttonNext.getHeight()) {
 				setWin(false);
+				mainActivity.getHandler().sendEmptyMessage(MAIN_VIEW);
 				return true;
 			} else if (x > buttonX && x < buttonX + buttonExit.getWidth()
 					&& y > buttonY2 && y < buttonY2 + buttonExit.getHeight()) {
