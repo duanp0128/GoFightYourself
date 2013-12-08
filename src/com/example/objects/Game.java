@@ -70,6 +70,14 @@ public class Game {
 
 		ownPlane.move(xVal, yVal, fire);
 		if (fire) {
+			if(xVal < Plane.width / 2)
+				xVal = Plane.width / 2;
+			if(xVal + Plane.width / 2 >= this.width)
+				xVal = this.width - Plane.width / 2;
+			if(yVal < Plane.height / 2)
+				yVal = Plane.height / 2;
+			if(yVal + Plane.height / 2 >= this.height)
+				yVal = this.height - Plane.height / 2;
 			ownBulletList.add(new Bullet(xVal, yVal, 0, -this.height / 30));
 		}
 
