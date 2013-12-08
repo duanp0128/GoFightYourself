@@ -85,7 +85,15 @@ public class Game {
 		updateBulletList(enemyBulletList);
 		updateEnemyPlaneList();
 		updateOwnPlane();
-		return status;
+		if(status == 1){
+			this.newLevel(true);
+			return 1;
+		}
+		if(status == 2){
+			this.newLevel(false);
+			return 2;
+		}
+		return 0;
 	}
 
 	private void updateOwnPlane() {
@@ -168,12 +176,11 @@ public class Game {
 
 	private void win() {
 		this.status = 1;
-		this.newLevel(true);
+		
 	}
 
 	private void gameover() {
 		this.status = 2;
-		this.newLevel(false);
 	}
 
 	public int getLevel() {
