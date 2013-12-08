@@ -68,16 +68,18 @@ public class Game {
 			fired = false;
 		}
 
+		if (xVal < Plane.width / 2)
+			xVal = Plane.width / 2;
+		if (xVal + Plane.width / 2 >= this.width)
+			xVal = this.width - Plane.width / 2;
+		if (yVal < Plane.height / 2)
+			yVal = Plane.height / 2;
+		if (yVal + Plane.height / 2 >= this.height)
+			yVal = this.height - Plane.height / 2;
 		ownPlane.move(xVal, yVal, fire);
+
 		if (fire) {
-			if(xVal < Plane.width / 2)
-				xVal = Plane.width / 2;
-			if(xVal + Plane.width / 2 >= this.width)
-				xVal = this.width - Plane.width / 2;
-			if(yVal < Plane.height / 2)
-				yVal = Plane.height / 2;
-			if(yVal + Plane.height / 2 >= this.height)
-				yVal = this.height - Plane.height / 2;
+
 			ownBulletList.add(new Bullet(xVal, yVal, 0, -this.height / 30));
 		}
 
@@ -85,11 +87,11 @@ public class Game {
 		updateBulletList(enemyBulletList);
 		updateEnemyPlaneList();
 		updateOwnPlane();
-		if(status == 1){
+		if (status == 1) {
 			this.newLevel(true);
 			return 1;
 		}
-		if(status == 2){
+		if (status == 2) {
 			this.newLevel(false);
 			return 2;
 		}
@@ -176,7 +178,7 @@ public class Game {
 
 	private void win() {
 		this.status = 1;
-		
+
 	}
 
 	private void gameover() {
