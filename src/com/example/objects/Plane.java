@@ -12,23 +12,26 @@ public class Plane {
 	float[] y;
 	boolean[] fire;
 	int life;
+	int level;
 	public static final float width = 90;
 	public static final float height = 100;
 
-	public Plane() {
+	public Plane(int level) {
 		x = new float[1000];
 		y = new float[1000];
 		fire = new boolean[1000];
 		life = 0;
+		this.level = level;
 	}
 
-	public Plane(float xVal, float yVal) {
+	public Plane(int level,float xVal, float yVal) {
 		x = new float[1000];
 		y = new float[1000];
 		fire = new boolean[1000];
 		life = 1;
 		x[0] = xVal;
 		y[0] = yVal;
+		this.level = level;
 	}
 
 	public void move(float xVal, float yVal, boolean fire) {

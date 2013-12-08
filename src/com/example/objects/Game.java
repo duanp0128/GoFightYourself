@@ -24,11 +24,15 @@ public class Game {
 		this.enemyPlaneList = new LinkedList<Plane>();
 		this.enemyBulletList = new LinkedList<Bullet>();
 		this.ownBulletList = new LinkedList<Bullet>();
-		this.ownPlane = new Plane(this.width / 2, (float) (this.height * 0.8));
 		if (newGame) {
 			Game.level = 0;
 			Game.planeList = new LinkedList<Plane>();
+			this.ownPlane = new Plane(Game.level, this.width / 2,
+					(float) (this.height * 0.8));
 			newLevel(true);
+		} else {
+			this.ownPlane = new Plane(Game.level, this.width / 2,
+					(float) (this.height * 0.8));
 		}
 	}
 
@@ -47,7 +51,8 @@ public class Game {
 		this.enemyPlaneList = (LinkedList<Plane>) Game.planeList.clone();
 		this.enemyBulletList = new LinkedList<Bullet>();
 		this.ownBulletList = new LinkedList<Bullet>();
-		this.ownPlane = new Plane(this.width / 2, (float) (this.height * 0.8));
+		this.ownPlane = new Plane(Game.level, this.width / 2,
+				(float) (this.height * 0.8));
 
 		// create initial bullets.
 		for (float i = Bullet.width; i < this.width; i += (Bullet.width * 2)) {
@@ -57,7 +62,6 @@ public class Game {
 	}
 
 	public int update(float xVal, float yVal, boolean fire) {
-		t++;
 		if (fire) {
 			if (fired) {
 				fire = false;
@@ -68,11 +72,11 @@ public class Game {
 			fired = false;
 		}
 
+		t++;
 		ownPlane.move(xVal, yVal, fire);
 
 		if (fire) {
-
-			ownBulletList.add(new Bullet(xVal, yVal, 0, -this.height / 30));
+			ownFire(xVal, yVal);
 		}
 
 		updateBulletList(ownBulletList);
@@ -130,8 +134,7 @@ public class Game {
 			if (dead)
 				continue;
 			if (plane.isFire(t)) {
-				enemyBulletList.add(new Bullet(plane.getX(t), plane.getY(t), 0,
-						this.height / 30));
+				enemyFire(plane.level, plane.getX(t), plane.getY(t));
 			}
 		}
 		if (enemyPlaneList.size() == 0) {
@@ -179,6 +182,53 @@ public class Game {
 
 	public int getLevel() {
 		return Game.level;
+	}
+
+	private void ownFire(float xVal, float yVal) {
+		int level = Game.level;
+		int direction = -1;
+		switch (level % 3) {
+		case 1:
+			ownBulletList.add(new Bullet(xVal, yVal, 0, direction * this.height
+					/ 30));
+			break;
+		case 2:
+			ownBulletList.add(new Bullet(xVal, yVal, -this.width / 60,
+					direction * this.height / 30));
+			ownBulletList.add(new Bullet(xVal, yVal, this.width / 60, direction
+					* this.height / 30));
+			break;
+		case 0:
+			ownBulletList.add(new Bullet(xVal, yVal, 0, direction * this.height
+					/ 30));
+			ownBulletList.add(new Bullet(xVal, yVal, -this.width / 60,
+					direction * this.height / 30));
+			ownBulletList.add(new Bullet(xVal, yVal, this.width / 60, direction
+					* this.height / 30));
+		}
+	}
+
+	private void enemyFire(int level, float xVal, float yVal) {
+		int direction = 1;
+		switch (level % 3) {
+		case 1:
+			enemyBulletList.add(new Bullet(xVal, yVal, 0, direction * this.height
+					/ 30));
+			break;
+		case 2:
+			enemyBulletList.add(new Bullet(xVal, yVal, -this.width / 60,
+					direction * this.height / 30));
+			enemyBulletList.add(new Bullet(xVal, yVal, this.width / 60, direction
+					* this.height / 30));
+			break;
+		case 0:
+			enemyBulletList.add(new Bullet(xVal, yVal, 0, direction * this.height
+					/ 30));
+			enemyBulletList.add(new Bullet(xVal, yVal, -this.width / 60,
+					direction * this.height / 30));
+			enemyBulletList.add(new Bullet(xVal, yVal, this.width / 60, direction
+					* this.height / 30));
+		}
 	}
 
 }
