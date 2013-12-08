@@ -22,22 +22,15 @@ public final class R {
     }
     public static final class drawable {
         public static final int background=0x7f020000;
-        public static final int background_start=0x7f020001;
+        public static final int biao=0x7f020001;
         public static final int bullet=0x7f020002;
-        public static final int button_about=0x7f020003;
-        public static final int button_again=0x7f020004;
-        public static final int button_end=0x7f020005;
-        public static final int button_exit=0x7f020006;
-        public static final int button_fire=0x7f020007;
-        public static final int button_next=0x7f020008;
-        public static final int button_start=0x7f020009;
-        public static final int ic_launcher=0x7f02000a;
-        public static final int pause=0x7f02000b;
-        public static final int plane=0x7f02000c;
-        public static final int plane_enemy=0x7f02000d;
-        public static final int title=0x7f02000e;
-        public static final int title_die=0x7f02000f;
-        public static final int title_win=0x7f020010;
+        public static final int button_fire=0x7f020003;
+        public static final int human_front=0x7f020004;
+        public static final int human_own=0x7f020005;
+        public static final int ic_launcher=0x7f020006;
+        public static final int pause=0x7f020007;
+        public static final int plane=0x7f020008;
+        public static final int plane_enemy=0x7f020009;
     }
     public static final class id {
         public static final int action_settings=0x7f080000;

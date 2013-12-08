@@ -1,6 +1,7 @@
 package com.example.views;
 
 import com.example.gofightyourself.R;
+import com.example.sounds.GameSoundPool;
 
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -31,8 +32,8 @@ public class StartView extends BaseView {
 	private float buttonYAbout;
 	private float buttonInterval; // interval between buttons
 
-	public StartView(Context context) {
-		super(context);
+	public StartView(Context context, GameSoundPool soundPool) {
+		super(context, soundPool);
 		isPressStart = isPressEnd = isPressAbout = false;
 		thread = new Thread(this);
 	}
@@ -67,11 +68,12 @@ public class StartView extends BaseView {
 	public void surfaceCreated(SurfaceHolder holder) {
 		// TODO Auto-generated method stub
 		super.surfaceCreated(holder);
-		initBitmap();
 		if (thread.isAlive()) {
+			initBitmap();
 			thread.start();
 		} else {
 			thread = new Thread(this);
+			initBitmap();
 			thread.start();
 		}
 	}
@@ -90,11 +92,11 @@ public class StartView extends BaseView {
 		canvas.drawBitmap(background, 0, 0, paint);
 		canvas.restore();
 		canvas.drawBitmap(title, titleX, titleY, paint);
-//		if (!isPressStart) {
-			canvas.drawBitmap(buttonStart, buttonX, buttonYStart, paint);
-//		} else {
-//			canvas.drawBitmap(buttonStart2, buttonX, buttonYStart, paint);
-//		}
+		// if (!isPressStart) {
+		canvas.drawBitmap(buttonStart, buttonX, buttonYStart, paint);
+		// } else {
+		// canvas.drawBitmap(buttonStart2, buttonX, buttonYStart, paint);
+		// }
 		if (!isPressEnd) {
 			canvas.drawBitmap(buttonEnd, buttonX, buttonYEnd, paint);
 		} else {

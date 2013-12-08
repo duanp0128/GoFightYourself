@@ -1,5 +1,6 @@
 package com.example.gofightyourself;
 
+import com.example.sounds.GameSoundPool;
 import com.example.views.*;
 
 import android.os.Bundle;
@@ -14,9 +15,8 @@ public class MainActivity extends Activity {
 	private StartView startView;
 	private MainView mainView;
 	private EndView endView;
-	// private WinView winView;
-	// private DieView dieView;
 	private AboutView aboutView;
+	private GameSoundPool soundPool;
 	private Handler handler = new Handler() {
 		@Override
 		public void handleMessage(Message msg) {
@@ -27,7 +27,9 @@ public class MainActivity extends Activity {
 			case 2:
 				toEndView();
 				break;
-
+			case 3:
+				toStartView();
+				break;
 			case 4:
 				toAboutView();
 				break;
@@ -41,7 +43,9 @@ public class MainActivity extends Activity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		startView = new StartView(this);
+		soundPool = new GameSoundPool(this);
+		soundPool.initGameSound();
+		startView = new StartView(this, soundPool);
 		setContentView(startView);
 		// mainView = new MainView(this);
 		// setContentView(mainView);
@@ -50,21 +54,29 @@ public class MainActivity extends Activity {
 	// show game mainview
 	public void toMainView() {
 		if (mainView == null) {
-			mainView = new MainView(this);
-			// Log.d("mainview","new");
+			mainView = new MainView(this, soundPool);
 		}
 		setContentView(mainView);
 		startView = null;
 		endView = null;
-		// winView = null;
-		// dieView = null;
+		aboutView = null;
+	}
+
+	// show start view
+	public void toStartView() {
+		if (startView == null) {
+			startView = new StartView(this, soundPool);
+		}
+		setContentView(startView);
+		mainView = null;
+		endView = null;
 		aboutView = null;
 	}
 
 	// show game win view
 	public void toEndView() {
 		if (endView == null) {
-			endView = new EndView(this);
+			endView = new EndView(this, soundPool);
 		}
 		setContentView(endView);
 		mainView = null;
@@ -75,7 +87,7 @@ public class MainActivity extends Activity {
 	// show game about view
 	public void toAboutView() {
 		if (aboutView == null) {
-			aboutView = new AboutView(this);
+			aboutView = new AboutView(this, soundPool);
 		}
 		setContentView(aboutView);
 		mainView = null;

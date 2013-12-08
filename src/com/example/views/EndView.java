@@ -1,6 +1,7 @@
 package com.example.views;
 
 import com.example.gofightyourself.R;
+import com.example.sounds.GameSoundPool;
 
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -23,8 +24,8 @@ public class EndView extends BaseView {
 	private float buttonY1;
 	private float buttonY2;
 
-	public EndView(Context context) {
-		super(context);
+	public EndView(Context context, GameSoundPool soundPool) {
+		super(context, soundPool);
 		thread = new Thread(this);
 	}
 
@@ -57,11 +58,12 @@ public class EndView extends BaseView {
 	@Override
 	public void surfaceCreated(SurfaceHolder holder) {
 		super.surfaceCreated(holder);
-		initBitmap();
 		if (thread.isAlive()) {
+			initBitmap();
 			thread.start();
 		} else {
 			thread = new Thread(this);
+			initBitmap();
 			thread.start();
 		}
 	}
@@ -84,7 +86,7 @@ public class EndView extends BaseView {
 		title2 = BitmapFactory.decodeResource(getResources(),
 				R.drawable.title_die);
 		buttonNext = BitmapFactory.decodeResource(getResources(),
-				R.drawable.button_next);
+				R.drawable.next);
 		buttonExit = BitmapFactory.decodeResource(getResources(),
 				R.drawable.button_exit);
 		buttonAgain = BitmapFactory.decodeResource(getResources(),
@@ -102,7 +104,7 @@ public class EndView extends BaseView {
 	public void draw() {
 		canvas.save();
 		canvas.scale(scaleWidth, scaleHeight, 0, 0);
-		canvas.drawBitmap(background, 0, 0, paint); 
+		canvas.drawBitmap(background, 0, 0, paint);
 		canvas.restore();
 		if (isWin) {
 			canvas.drawBitmap(title1, titleX, titleY, paint);
@@ -142,7 +144,7 @@ public class EndView extends BaseView {
 				return true;
 			} else if (x > buttonX && x < buttonX + buttonExit.getWidth()
 					&& y > buttonY2 && y < buttonY2 + buttonExit.getHeight()) {
-				mainActivity.getHandler().sendEmptyMessage(END_GAME);
+				mainActivity.getHandler().sendEmptyMessage(START_VIEW);
 				return true;
 			}
 			return false;

@@ -4,6 +4,8 @@ import java.util.LinkedList;
 
 import com.example.gofightyourself.R;
 import com.example.objects.Game;
+import com.example.objects.Plane;
+import com.example.sounds.GameSoundPool;
 
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -35,29 +37,17 @@ public class MainView extends BaseView {
 	private Bitmap bullet;
 	private Bitmap buttonFire;
 	private Bitmap buttonNoFire;
+	private int currentFrame; //
 
-	public MainView(Context context) {
-		super(context);
+	public MainView(Context context, GameSoundPool soundPool) {
+		super(context, soundPool);
 		// initial game resource
 		isFire = false;
 		isPlaneTouched = false;
 		isNewGame = true;
+		currentFrame = 0;
 
 		thread = new Thread(this);
-	}
-
-	// plane whether move outside screen
-	private boolean outsideScreen(float x, float y, Bitmap object) {
-		float object_left = x - object.getWidth() / 2;
-		float object_top = y - object.getHeight() / 2;
-		float object_right = x + object.getWidth() / 2;
-		float object_bottom = y + object.getHeight() / 2;
-
-		if (object_left < 0 || object_right > screenWidth || object_top < 0
-				|| object_bottom > screenHeight) {
-			return true;
-		}
-		return false;
 	}
 
 	@Override
@@ -72,11 +62,10 @@ public class MainView extends BaseView {
 		background = BitmapFactory.decodeResource(getResources(),
 				R.drawable.background);
 		ownPlane = BitmapFactory.decodeResource(getResources(),
-				R.drawable.plane);
+				R.drawable.human_own);
 		enemyPlane = BitmapFactory.decodeResource(getResources(),
-				R.drawable.plane_enemy);
-		bullet = BitmapFactory
-				.decodeResource(getResources(), R.drawable.bullet);
+				R.drawable.human_front);
+		bullet = BitmapFactory.decodeResource(getResources(), R.drawable.biao);
 		buttonFire = BitmapFactory.decodeResource(getResources(),
 				R.drawable.button_fire);
 		scaleWidth = screenWidth / background.getWidth();
@@ -87,10 +76,20 @@ public class MainView extends BaseView {
 
 	@Override
 	public void draw() {
+		// keep human inside the screen
+		if (planeX < Plane.width / 2)
+			planeX = Plane.width / 2;
+		if (planeX + Plane.width / 2 >= screenWidth)
+			planeX = scaleWidth - Plane.width / 2;
+		if (planeY < Plane.height / 2)
+			planeY = Plane.height / 2;
+		if (planeY + Plane.height / 2 >= screenHeight)
+			planeY = scaleHeight - Plane.height / 2;
 		gameStatus = game.update(planeX, planeY, isFire);
 		/** win **/
 		if (gameStatus == 1) {
 			setWin(true);
+			Log.d("win", "win");
 			mainActivity.getHandler().sendEmptyMessage(END_VIEW);
 		}
 
@@ -138,11 +137,17 @@ public class MainView extends BaseView {
 		for (int i = 0; i < bulletList.size(); ++i) {
 			float left = bulletList.get(i)[0] - bullet.getWidth() / 2;
 			float top = bulletList.get(i)[1] - bullet.getHeight() / 2;
+			int x = (int) (currentFrame * bullet.getWidth()); // 获得当前帧相对于位图的X坐标
 			canvas.save();
-			canvas.drawBitmap(bullet, left, top, paint);
+			canvas.clipRect(left, top, left + bullet.getWidth(),
+					top + bullet.getHeight());
+			canvas.drawBitmap(bullet, left + x, top, paint);
 			canvas.restore();
+			currentFrame++;
+			if (currentFrame > 2) {
+				currentFrame = 0;
+			}
 		}
-
 	}
 
 	@Override
@@ -173,11 +178,12 @@ public class MainView extends BaseView {
 	@Override
 	public void surfaceCreated(SurfaceHolder holder) {
 		super.surfaceCreated(holder);
-		initBitmap();
 		if (thread.isAlive()) {
+			initBitmap();
 			thread.start();
 		} else {
 			thread = new Thread(this);
+			initBitmap();
 			thread.start();
 		}
 	}

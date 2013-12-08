@@ -1,6 +1,7 @@
 package com.example.views;
 
 import com.example.gofightyourself.MainActivity;
+import com.example.sounds.GameSoundPool;
 
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -25,15 +26,16 @@ public class BaseView extends SurfaceView implements SurfaceHolder.Callback,
 	public static final int TIME_IN_FRAME = 20;
 
 	public MainActivity mainActivity;
+	public GameSoundPool soundPool;
 	public final int MAIN_VIEW = 1;
-	// public final int WIN_VIEW = 2;
 	public final int END_VIEW = 2;
-	public final int DIE_VIEW = 3;
+	public final int START_VIEW = 3;
 	public final int ABOUT_VIEW = 4;
 	public final int END_GAME = 5;
 
-	public BaseView(Context context) {
+	public BaseView(Context context, GameSoundPool soundPool) {
 		super(context);
+		this.soundPool = soundPool;
 		sfh = this.getHolder();
 		sfh.addCallback(this);
 		mainActivity = (MainActivity) context;
