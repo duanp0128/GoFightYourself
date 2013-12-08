@@ -13,7 +13,7 @@ public class Plane {
 	boolean[] fire;
 	int life;
 	public static final float width = 90;
-	public static final float height = 135;
+	public static final float height = 100;
 
 	public Plane() {
 		x = new float[1000];

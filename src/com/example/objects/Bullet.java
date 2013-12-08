@@ -5,8 +5,8 @@ public class Bullet {
 	float y;
 	float speedX;
 	float speedY;
-	static final float width = 9;
-	static final float height = 45;
+	static final float width = 30;
+	static final float height = 30;
 
 	public Bullet(float headX, float headY, float speedX, float speedY) {
 		this.x = headX;
