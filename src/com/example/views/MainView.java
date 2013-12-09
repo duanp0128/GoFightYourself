@@ -3,6 +3,7 @@ package com.example.views;
 import java.util.LinkedList;
 
 import com.example.gofightyourself.R;
+import com.example.objects.Bullet;
 import com.example.objects.Game;
 import com.example.objects.Plane;
 import com.example.sounds.GameSoundPool;
@@ -24,6 +25,7 @@ public class MainView extends BaseView {
 	private Game game;
 	private boolean isPlaneTouched;
 	private boolean isFire;
+	private boolean fired;
 	private int gameStatus;
 	private float planeX;
 	private float planeY;
@@ -43,6 +45,7 @@ public class MainView extends BaseView {
 		super(context, soundPool);
 		// initial game resource
 		isFire = false;
+		fired = false;
 		isPlaneTouched = false;
 		isNewGame = true;
 		currentFrame = 0;
@@ -72,6 +75,11 @@ public class MainView extends BaseView {
 				R.drawable.button_fire);
 		scaleWidth = screenWidth / background.getWidth();
 		scaleHeight = screenHeight / background.getHeight();
+		Plane.width = ownPlane.getWidth();
+		Plane.height = ownPlane.getHeight();
+		Bullet.height = bullet.getHeight();
+		Bullet.width = bullet.getWidth() / 3;
+
 	}
 
 	@Override
@@ -79,14 +87,27 @@ public class MainView extends BaseView {
 		try {
 			canvas = sfh.lockCanvas();
 			// keep human inside the screen
-			if (planeX < Plane.width / 2)
-				planeX = Plane.width / 2;
-			if (planeX + Plane.width / 2 >= screenWidth)
-				planeX = scaleWidth - Plane.width / 2;
-			if (planeY < Plane.height / 2)
-				planeY = Plane.height / 2;
-			if (planeY + Plane.height / 2 >= screenHeight)
-				planeY = scaleHeight - Plane.height / 2;
+			float buffer = 0;
+			if (planeX < Plane.width / 2 + buffer)
+				planeX = Plane.width / 2 + buffer;
+			if (planeX + Plane.width / 2 + buffer >= screenWidth)
+				planeX = screenWidth - Plane.width / 2 - buffer;
+			if (planeY < Plane.height / 2 + buffer)
+				planeY = Plane.height / 2 + buffer;
+			if (planeY + Plane.height / 2 + buffer >= screenHeight)
+				planeY = screenHeight - Plane.height / 2 - buffer;
+//			if (isFire) {
+//				if (fired) {
+//					isFire = false;
+//				} else {
+//					fired = true;
+//				}
+//			} else if (fired) {
+//				fired = false;
+//			}
+//			if (isFire) {
+//				soundPool.playSound(2, 0);
+//			}
 			gameStatus = game.update(planeX, planeY, isFire);
 			/** win **/
 			if (gameStatus == 1) {
@@ -99,6 +120,7 @@ public class MainView extends BaseView {
 			/** die **/
 			if (gameStatus == 2) {
 				setWin(false);
+				soundPool.playSound(3, 0);
 				mainActivity.getHandler().sendEmptyMessage(END_VIEW);
 				return;
 			}
@@ -137,7 +159,8 @@ public class MainView extends BaseView {
 			for (int i = 0; i < bulletList.size(); ++i) {
 				float left = bulletList.get(i)[0] - bullet.getWidth() / 3 / 2;
 				float top = bulletList.get(i)[1] - bullet.getHeight() / 2;
-//				int x = (int) (currentFrame * (bullet.getWidth() / 3 / 2)); // 获得当前帧相对于位图的X坐标
+				// int x = (int) (currentFrame * (bullet.getWidth() / 3 / 2));
+				// // 获得当前帧相对于位图的X坐标
 				canvas.save();
 				canvas.clipRect(left, top, left + bullet.getWidth() / 3, top
 						+ bullet.getHeight());

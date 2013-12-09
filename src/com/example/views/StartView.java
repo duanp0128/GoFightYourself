@@ -129,10 +129,12 @@ public class StartView extends BaseView {
 					&& y > buttonYStart
 					&& y < buttonYStart + buttonStart.getHeight()) {
 				setStart(true);
+				soundPool.playSound(1, 0);
 				mainActivity.getHandler().sendEmptyMessage(this.MAIN_VIEW);
 				return true;
 			} else if (x > buttonX && x < buttonX + buttonEnd.getWidth()
 					&& y > buttonYEnd && y < buttonYEnd + buttonEnd.getHeight()) {
+				soundPool.playSound(1, 0);
 				mainActivity.getHandler().sendEmptyMessage(this.END_GAME);
 				return true;
 			} else if (x > buttonX && x < buttonX + buttonAbout.getWidth()

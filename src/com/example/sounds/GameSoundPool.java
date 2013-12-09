@@ -3,6 +3,7 @@ package com.example.sounds;
 import java.util.HashMap;
 
 import com.example.gofightyourself.MainActivity;
+import com.example.gofightyourself.R;
 
 import android.content.Context;
 import android.media.AudioManager;
@@ -20,9 +21,9 @@ public class GameSoundPool {
 	}
 
 	public void initGameSound() {
-//		 map.put(1, soundPool.load(mainActivity, R, 1));
-		// map.put(2, soundPool.load(mainActivity, R.sounds.explosion, 1));
-		// map.put(3, soundPool.load(mainActivity, R.raw.explosion2, 1));
+		map.put(1, soundPool.load(mainActivity, R.raw.click, 1));
+		map.put(2, soundPool.load(mainActivity, R.raw.biao, 1));
+		map.put(3, soundPool.load(mainActivity, R.raw.lose, 1));
 		// map.put(4, soundPool.load(mainActivity, R.raw.explosion3, 1));
 		// map.put(5, soundPool.load(mainActivity, R.raw.bigexplosion, 1));
 		// map.put(6, soundPool.load(mainActivity, R.raw.get_goods, 1));
