@@ -10,7 +10,6 @@ public class Game {
 	float width;
 	float height;
 	boolean fired;
-	static boolean levelup;
 	LinkedList<Plane> enemyPlaneList;
 	LinkedList<Bullet> enemyBulletList;
 	LinkedList<Bullet> ownBulletList;
@@ -22,34 +21,32 @@ public class Game {
 		this.status = 0;
 		this.width = width;
 		this.height = height;
-		this.enemyPlaneList = new LinkedList<Plane>();
-		this.enemyBulletList = new LinkedList<Bullet>();
-		this.ownBulletList = new LinkedList<Bullet>();
+		this.fired = false;
+
 		if (newGame) {
 			Game.level = 0;
 			Game.planeList = new LinkedList<Plane>();
-			Game.levelup = true;
 			this.ownPlane = new Plane(Game.level, this.width / 2,
 					(float) (this.height * 0.8));
+			this.enemyPlaneList = new LinkedList<Plane>();
+			newLevel(true);
 		}
-		newLevel();
+
 	}
 
 	@SuppressWarnings("unchecked")
-	public void newLevel() {
+	public void newLevel(boolean levelup) {
 
 		this.t = 0;
 		this.status = 0;
 		this.fired = false;
-		ownPlane.mirror(this.height);
 		if (levelup) {
+			ownPlane.mirror(this.height);
 			Game.planeList.add(ownPlane);
 			Game.level++;
-			Game.levelup = false;
-		} else {
-			this.ownPlane = new Plane(Game.level, this.width / 2,
-					(float) (this.height * 0.8));
 		}
+		this.ownPlane = new Plane(Game.level, this.width / 2,
+				(float) (this.height * 0.8));
 		this.enemyPlaneList.clear();
 		this.enemyPlaneList = (LinkedList<Plane>) Game.planeList.clone();
 		this.enemyBulletList = new LinkedList<Bullet>();
@@ -87,11 +84,11 @@ public class Game {
 		updateEnemyPlaneList();
 		updateOwnPlane();
 		if (status == 1) {
-			this.newLevel();
+			this.newLevel(true);
 			return 1;
 		}
 		if (status == 2) {
-			this.newLevel();
+			this.newLevel(false);
 			return 2;
 		}
 		return 0;
@@ -176,13 +173,10 @@ public class Game {
 
 	private void win() {
 		this.status = 1;
-		Game.levelup = true;
-
 	}
 
 	private void gameover() {
 		this.status = 2;
-		Game.levelup = false;
 	}
 
 	public int getLevel() {
