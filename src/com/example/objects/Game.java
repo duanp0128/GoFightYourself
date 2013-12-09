@@ -25,8 +25,8 @@ public class Game {
 		this.enemyBulletList = new LinkedList<Bullet>();
 		this.ownBulletList = new LinkedList<Bullet>();
 		if (newGame) {
-			Game.level = 0;
-			Game.planeList = new LinkedList<Plane>();
+//			Game.level = 0;
+//			Game.planeList = new LinkedList<Plane>();
 			this.ownPlane = new Plane(Game.level, this.width / 2,
 					(float) (this.height * 0.8));
 			newLevel(true);
@@ -55,7 +55,7 @@ public class Game {
 				(float) (this.height * 0.8));
 
 		// create initial bullets.
-		for (float i = Bullet.width; i < this.width; i += (Bullet.width * 2)) {
+		for (float i = Bullet.width; i < this.width; i += (Bullet.width * 3)) {
 			enemyBulletList.add(new Bullet(i, 0, 0, this.height
 					/ ((Game.level * 2 + 8) * 30)));
 		}
