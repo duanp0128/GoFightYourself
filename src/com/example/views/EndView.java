@@ -1,5 +1,7 @@
 package com.example.views;
 
+import com.example.gofightyourself.MainActivity;
+import com.example.gofightyourself.R;
 import com.example.sounds.GameSoundPool;
 
 import android.content.Context;
@@ -25,6 +27,7 @@ public class EndView extends BaseView {
 
 	public EndView(Context context, GameSoundPool soundPool) {
 		super(context, soundPool);
+		this.mainActivity = (MainActivity) context;
 		thread = new Thread(this);
 	}
 
@@ -32,11 +35,7 @@ public class EndView extends BaseView {
 	public void run() {
 		while (threadFlag) {
 			long startTime = System.currentTimeMillis();
-			synchronized (sfh) {
-				canvas = sfh.lockCanvas();
-				draw();
-				sfh.unlockCanvasAndPost(canvas);
-			}
+			draw();
 			long endTime = System.currentTimeMillis();
 			int intervalTime = (int) (endTime - startTime);
 			// make sure every update time is 30 frame
@@ -57,12 +56,11 @@ public class EndView extends BaseView {
 	@Override
 	public void surfaceCreated(SurfaceHolder holder) {
 		super.surfaceCreated(holder);
+		initBitmap();
 		if (thread.isAlive()) {
-			initBitmap();
 			thread.start();
 		} else {
 			thread = new Thread(this);
-			initBitmap();
 			thread.start();
 		}
 	}
@@ -76,20 +74,16 @@ public class EndView extends BaseView {
 
 	@Override
 	public void initBitmap() {
-		canvas = new Canvas();
-		paint = new Paint();
-//		background = BitmapFactory.decodeResource(getResources(),
-//				R.drawable.background);
-//		title1 = BitmapFactory.decodeResource(getResources(),
-//				R.drawable.title_win);
-//		title2 = BitmapFactory.decodeResource(getResources(),
-//				R.drawable.title_die);
-//		buttonNext = BitmapFactory.decodeResource(getResources(),
-//				R.drawable.next);
-//		buttonExit = BitmapFactory.decodeResource(getResources(),
-//				R.drawable.menu);
-//		buttonAgain = BitmapFactory.decodeResource(getResources(),
-//				R.drawable.retry);
+		background = BitmapFactory.decodeResource(getResources(),
+				R.drawable.background);
+		title1 = BitmapFactory.decodeResource(getResources(), R.drawable.win);
+		title2 = BitmapFactory.decodeResource(getResources(), R.drawable.lose);
+		buttonNext = BitmapFactory.decodeResource(getResources(),
+				R.drawable.next);
+		buttonExit = BitmapFactory.decodeResource(getResources(),
+				R.drawable.menu);
+		buttonAgain = BitmapFactory.decodeResource(getResources(),
+				R.drawable.retry);
 		scaleWidth = screenWidth / background.getWidth();
 		scaleHeight = screenHeight / background.getHeight();
 		titleX = screenWidth / 2 - title1.getWidth() / 2;
@@ -101,18 +95,26 @@ public class EndView extends BaseView {
 
 	@Override
 	public void draw() {
-		canvas.save();
-		canvas.scale(scaleWidth, scaleHeight, 0, 0);
-		canvas.drawBitmap(background, 0, 0, paint);
-		canvas.restore();
-		if (isWin) {
-			canvas.drawBitmap(title1, titleX, titleY, paint);
-			canvas.drawBitmap(buttonNext, buttonX, buttonY1, paint);
-		} else {
-			canvas.drawBitmap(title2, titleX, titleY, paint);
-			canvas.drawBitmap(buttonAgain, buttonX, buttonY1, paint);
+		try {
+			canvas = sfh.lockCanvas();
+			canvas.save();
+			canvas.scale(scaleWidth, scaleHeight, 0, 0);
+			canvas.drawBitmap(background, 0, 0, paint);
+			canvas.restore();
+			if (isWin) {
+				canvas.drawBitmap(title1, titleX, titleY, paint);
+				canvas.drawBitmap(buttonNext, buttonX, buttonY1, paint);
+			} else {
+				canvas.drawBitmap(title2, titleX, titleY, paint);
+				canvas.drawBitmap(buttonAgain, buttonX, buttonY1, paint);
+			}
+			canvas.drawBitmap(buttonExit, buttonX, buttonY2, paint);
+		} catch (Exception err) {
+			err.printStackTrace();
+		} finally {
+			if (canvas != null)
+				sfh.unlockCanvasAndPost(canvas);
 		}
-		canvas.drawBitmap(buttonExit, buttonX, buttonY2, paint);
 	}
 
 	@Override
@@ -143,6 +145,7 @@ public class EndView extends BaseView {
 				return true;
 			} else if (x > buttonX && x < buttonX + buttonExit.getWidth()
 					&& y > buttonY2 && y < buttonY2 + buttonExit.getHeight()) {
+				setWin(false);
 				mainActivity.getHandler().sendEmptyMessage(START_VIEW);
 				return true;
 			}

@@ -1,5 +1,6 @@
 package com.example.views;
 
+import com.example.gofightyourself.R;
 import com.example.sounds.GameSoundPool;
 
 import android.content.Context;
@@ -35,9 +36,7 @@ public class StartView extends BaseView {
 		while (threadFlag) {
 			long startTime = System.currentTimeMillis();
 			synchronized (sfh) {
-				canvas = sfh.lockCanvas();
 				draw();
-				sfh.unlockCanvasAndPost(canvas);
 			}
 			long endTime = System.currentTimeMillis();
 			int intervalTime = (int) (endTime - startTime);
@@ -60,12 +59,11 @@ public class StartView extends BaseView {
 	public void surfaceCreated(SurfaceHolder holder) {
 		// TODO Auto-generated method stub
 		super.surfaceCreated(holder);
+		initBitmap();
 		if (thread.isAlive()) {
-			initBitmap();
 			thread.start();
 		} else {
 			thread = new Thread(this);
-			initBitmap();
 			thread.start();
 		}
 	}
@@ -79,29 +77,37 @@ public class StartView extends BaseView {
 
 	@Override
 	public void draw() {
-		canvas.save();
-		canvas.scale(scaleWidth, scaleHeight, 0, 0);
-		canvas.drawBitmap(background, 0, 0, paint);
-		canvas.restore();
-		canvas.drawBitmap(title, titleX, titleY, paint);
-		canvas.drawBitmap(buttonStart, buttonX, buttonYStart, paint);
-		canvas.drawBitmap(buttonEnd, buttonX, buttonYEnd, paint);
-		canvas.drawBitmap(buttonAbout, buttonX, buttonYAbout, paint);
+		try {
+			canvas = sfh.lockCanvas();
+			canvas.save();
+			canvas.scale(scaleWidth, scaleHeight, 0, 0);
+			canvas.drawBitmap(background, 0, 0, paint);
+			canvas.restore();
+			canvas.save();
+			canvas.drawBitmap(title, titleX, titleY, paint);
+			canvas.drawBitmap(buttonStart, buttonX, buttonYStart, paint);
+			canvas.drawBitmap(buttonEnd, buttonX, buttonYEnd, paint);
+			canvas.drawBitmap(buttonAbout, buttonX, buttonYAbout, paint);
+			canvas.restore();
+		} catch (Exception err) {
+			err.printStackTrace();
+		} finally {
+			if (canvas != null)
+				sfh.unlockCanvasAndPost(canvas);
+		}
 	}
 
 	@Override
 	public void initBitmap() {
-		canvas = new Canvas();
-		paint = new Paint();
-//		background = BitmapFactory.decodeResource(getResources(),
-//				R.drawable.background);
-//		title = BitmapFactory.decodeResource(getResources(), R.drawable.title);
-//		buttonStart = BitmapFactory.decodeResource(getResources(),
-//				R.drawable.start);
-//		buttonEnd = BitmapFactory.decodeResource(getResources(),
-//				R.drawable.exit);
-//		buttonAbout = BitmapFactory.decodeResource(getResources(),
-//				R.drawable.about);
+		background = BitmapFactory.decodeResource(getResources(),
+				R.drawable.background);
+		title = BitmapFactory.decodeResource(getResources(), R.drawable.title);
+		buttonStart = BitmapFactory.decodeResource(getResources(),
+				R.drawable.start);
+		buttonEnd = BitmapFactory.decodeResource(getResources(),
+				R.drawable.exit);
+		// buttonAbout = BitmapFactory.decodeResource(getResources(),
+		// R.drawable.about);
 		scaleWidth = screenWidth / background.getWidth();
 		scaleHeight = screenHeight / background.getHeight();
 		titleX = screenWidth / 2 - title.getWidth() / 2;
@@ -111,6 +117,7 @@ public class StartView extends BaseView {
 		buttonYStart = titleY + title.getHeight() + buttonInterval;
 		buttonYEnd = buttonYStart + buttonStart.getHeight() + buttonInterval;
 		buttonYAbout = buttonYEnd + buttonEnd.getHeight() + buttonInterval;
+		setStart(false);
 	}
 
 	@Override
@@ -121,6 +128,7 @@ public class StartView extends BaseView {
 			if (x > buttonX && x < buttonX + buttonStart.getWidth()
 					&& y > buttonYStart
 					&& y < buttonYStart + buttonStart.getHeight()) {
+				setStart(true);
 				mainActivity.getHandler().sendEmptyMessage(this.MAIN_VIEW);
 				return true;
 			} else if (x > buttonX && x < buttonX + buttonEnd.getWidth()

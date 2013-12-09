@@ -22,8 +22,9 @@ public class BaseView extends SurfaceView implements SurfaceHolder.Callback,
 	public float screenHeight;
 	public float scaleWidth;
 	public float scaleHeight;
-	public boolean isWin;
-	public static final int TIME_IN_FRAME = 20;
+	public static boolean isWin;
+	public static boolean isStart;
+	public static final int TIME_IN_FRAME = 30;
 
 	public MainActivity mainActivity;
 	public GameSoundPool soundPool;
@@ -36,9 +37,10 @@ public class BaseView extends SurfaceView implements SurfaceHolder.Callback,
 	public BaseView(Context context, GameSoundPool soundPool) {
 		super(context);
 		this.soundPool = soundPool;
+		this.mainActivity = (MainActivity) context;
 		sfh = this.getHolder();
 		sfh.addCallback(this);
-		mainActivity = (MainActivity) context;
+		paint = new Paint();
 	}
 
 	@Override
@@ -55,7 +57,7 @@ public class BaseView extends SurfaceView implements SurfaceHolder.Callback,
 
 	@Override
 	public void surfaceCreated(SurfaceHolder holder) {
-		threadFlag = true;
+		setThreadFlag(true);
 		screenWidth = this.getWidth();
 		screenHeight = this.getHeight();
 	}
@@ -75,20 +77,6 @@ public class BaseView extends SurfaceView implements SurfaceHolder.Callback,
 
 	}
 
-	// change bitmap scale to fit screen
-	public Bitmap changeBitmap(Bitmap originImage, int newWidth, int newHeight) {
-		// TODO Auto-generated method stub
-		int width = originImage.getWidth();
-		int height = originImage.getHeight();
-		scaleWidth = ((float) newWidth) / width;
-		scaleHeight = ((float) newHeight) / height;
-		Matrix matrix = new Matrix();
-		matrix.postScale(scaleWidth, scaleHeight);
-		Bitmap newBitmap = Bitmap.createBitmap(originImage, 0, 0, width,
-				height, matrix, true);
-		return newBitmap;
-	}
-
 	// draw bitmap resource
 	public void draw() {
 	}
@@ -99,5 +87,9 @@ public class BaseView extends SurfaceView implements SurfaceHolder.Callback,
 
 	public void setWin(boolean isWin) {
 		this.isWin = isWin;
+	}
+
+	public static void setStart(boolean isStart) {
+		BaseView.isStart = isStart;
 	}
 }
