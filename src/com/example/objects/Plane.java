@@ -13,16 +13,16 @@ public class Plane {
 	boolean[] fire;
 	int life;
 	int level;
-	public static final float width = 90;
-	public static final float height = 100;
+	public static float width = 90;
+	public static float height = 100;
 
-	public Plane(int level) {
-		x = new float[1000];
-		y = new float[1000];
-		fire = new boolean[1000];
-		life = 0;
-		this.level = level;
-	}
+//	public Plane(int level) {
+//		x = new float[1000];
+//		y = new float[1000];
+//		fire = new boolean[1000];
+//		life = 0;
+//		this.level = level;
+//	}
 
 	public Plane(int level,float xVal, float yVal) {
 		x = new float[1000];

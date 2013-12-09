@@ -3,6 +3,8 @@ package com.example.objects;
 import java.util.Iterator;
 import java.util.LinkedList;
 
+import android.util.Log;
+
 public class Game {
 	static int level;
 	int t;
@@ -22,6 +24,11 @@ public class Game {
 		this.width = width;
 		this.height = height;
 		this.fired = false;
+		this.enemyPlaneList = new LinkedList<Plane>();
+		this.enemyBulletList = new LinkedList<Bullet>();
+		this.ownBulletList = new LinkedList<Bullet>();
+		this.ownPlane = new Plane(Game.level, this.width / 2,
+				(float) (this.height * 0.8));
 
 		if (newGame) {
 			Game.level = 0;
@@ -31,7 +38,7 @@ public class Game {
 			this.enemyPlaneList = new LinkedList<Plane>();
 			newLevel(true);
 		}
-
+		newLevel(false);
 	}
 
 	@SuppressWarnings("unchecked")
@@ -49,6 +56,8 @@ public class Game {
 				(float) (this.height * 0.8));
 		this.enemyPlaneList.clear();
 		this.enemyPlaneList = (LinkedList<Plane>) Game.planeList.clone();
+		Log.d("game",
+				Game.planeList.size() + "clone" + this.enemyPlaneList.size());
 		this.enemyBulletList = new LinkedList<Bullet>();
 		this.ownBulletList = new LinkedList<Bullet>();
 		this.ownPlane = new Plane(Game.level, this.width / 2,
@@ -62,6 +71,7 @@ public class Game {
 	}
 
 	public int update(float xVal, float yVal, boolean fire) {
+		Log.d("game", this.t + "update");
 		if (fire) {
 			if (fired) {
 				fire = false;
@@ -118,6 +128,7 @@ public class Game {
 	public void updateEnemyPlaneList() {
 		boolean dead;
 		Iterator<Plane> iterPlane = enemyPlaneList.iterator();
+		Log.d("game", "#" + enemyPlaneList.size());
 		while (iterPlane.hasNext()) {
 			Plane plane = iterPlane.next();
 			dead = false;
@@ -137,6 +148,7 @@ public class Game {
 				enemyFire(plane.level, plane.getX(t), plane.getY(t));
 			}
 		}
+		Log.d("game", "##" + enemyPlaneList.size());
 		if (enemyPlaneList.size() == 0) {
 			win();
 			return;
@@ -173,6 +185,7 @@ public class Game {
 
 	private void win() {
 		this.status = 1;
+		Log.d("game", "win");
 	}
 
 	private void gameover() {
