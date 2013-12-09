@@ -93,12 +93,14 @@ public class MainView extends BaseView {
 				setWin(true);
 				// Log.d("win", "win");
 				mainActivity.getHandler().sendEmptyMessage(END_VIEW);
+				return;
 			}
 
 			/** die **/
 			if (gameStatus == 2) {
 				setWin(false);
 				mainActivity.getHandler().sendEmptyMessage(END_VIEW);
+				return;
 			}
 			// draw background
 			canvas.save();
