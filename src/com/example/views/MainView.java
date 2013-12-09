@@ -111,8 +111,8 @@ public class MainView extends BaseView {
 			canvas.restore();
 			// draw level status
 			canvas.save();
-			paint.setTextSize(30);
-			paint.setColor(Color.rgb(235, 161, 1));
+			paint.setTextSize(100);
+			paint.setColor(Color.BLACK);
 			canvas.drawText("Level: " + String.valueOf(game.getLevel()),
 					screenWidth / 3, 60, paint);
 			canvas.restore();
@@ -135,11 +135,11 @@ public class MainView extends BaseView {
 			for (int i = 0; i < bulletList.size(); ++i) {
 				float left = bulletList.get(i)[0] - bullet.getWidth() / 3 / 2;
 				float top = bulletList.get(i)[1] - bullet.getHeight() / 2;
-				int x = (int) (currentFrame * (bullet.getWidth() / 3 / 2)); // 获得当前帧相对于位图的X坐标
+//				int x = (int) (currentFrame * (bullet.getWidth() / 3 / 2)); // 获得当前帧相对于位图的X坐标
 				canvas.save();
 				canvas.clipRect(left, top, left + bullet.getWidth() / 3, top
 						+ bullet.getHeight());
-				canvas.drawBitmap(bullet, left + x, top, paint);
+				canvas.drawBitmap(bullet, left, top, paint);
 				canvas.restore();
 				currentFrame++;
 				if (currentFrame > 2) {

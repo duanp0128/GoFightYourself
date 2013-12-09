@@ -112,7 +112,7 @@ public class StartView extends BaseView {
 		scaleHeight = screenHeight / background.getHeight();
 		titleX = screenWidth / 2 - title.getWidth() / 2;
 		titleY = 50;
-		buttonInterval = 30;
+		buttonInterval = 80;
 		buttonX = screenWidth / 2 - buttonStart.getWidth() / 2;
 		buttonYStart = titleY + title.getHeight() + buttonInterval;
 		buttonYEnd = buttonYStart + buttonStart.getHeight() + buttonInterval;

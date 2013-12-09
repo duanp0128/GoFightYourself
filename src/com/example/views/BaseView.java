@@ -24,7 +24,7 @@ public class BaseView extends SurfaceView implements SurfaceHolder.Callback,
 	public float scaleHeight;
 	public static boolean isWin;
 	public static boolean isStart;
-	public static final int TIME_IN_FRAME = 30;
+	public static final int TIME_IN_FRAME = 20;
 
 	public MainActivity mainActivity;
 	public GameSoundPool soundPool;
